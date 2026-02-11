@@ -7,16 +7,19 @@ resource "azurerm_firewall_nat_rule_collection" "firewall_nat_rule_collections" 
   priority            = each.value.priority
   resource_group_name = each.value.resource_group_name
 
-  rule {
-    description           = each.value.rule.description
-    destination_addresses = each.value.rule.destination_addresses
-    destination_ports     = each.value.rule.destination_ports
-    name                  = each.value.rule.name
-    protocols             = each.value.rule.protocols
-    source_addresses      = each.value.rule.source_addresses
-    source_ip_groups      = each.value.rule.source_ip_groups
-    translated_address    = each.value.rule.translated_address
-    translated_port       = each.value.rule.translated_port
+  dynamic "rule" {
+    for_each = each.value.rule
+    content {
+      description           = rule.value.description
+      destination_addresses = rule.value.destination_addresses
+      destination_ports     = rule.value.destination_ports
+      name                  = rule.value.name
+      protocols             = rule.value.protocols
+      source_addresses      = rule.value.source_addresses
+      source_ip_groups      = rule.value.source_ip_groups
+      translated_address    = rule.value.translated_address
+      translated_port       = rule.value.translated_port
+    }
   }
 }
 
